@@ -47,7 +47,7 @@
         "IdentityPoolName": "ridygo84f06440_identitypool_84f06440__staging",
         "UserPoolName": "ridygo84f06440_userpool_84f06440"
       },
-      "lastPushTimeStamp": "2023-12-28T17:37:02.289Z",
+      "lastPushTimeStamp": "2023-12-28T19:13:00.708Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-ridygo-staging-164349-deployment/amplify-cfn-templates/auth/ridygo84f06440-cloudformation-template.json",
         "logicalId": "authridygo84f06440"
@@ -84,7 +84,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-ridygo-staging-164349-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apiridygo"
       },
-      "lastPushTimeStamp": "2023-12-28T17:37:02.294Z",
+      "lastPushTimeStamp": "2023-12-28T19:13:00.716Z",
       "lastPushDirHash": "wUUQPNqpbUcpv2Ye5yHwPDzVSWs="
     }
   },
@@ -115,7 +115,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-ridygo-staging-164349-deployment/amplify-cfn-templates/function/ridygo9aeebaf4-cloudformation-template.json",
         "logicalId": "functionridygo9aeebaf4"
       },
-      "lastPushTimeStamp": "2023-12-28T17:37:02.447Z",
+      "lastPushTimeStamp": "2023-12-28T19:13:00.760Z",
       "output": {
         "LambdaExecutionRoleArn": "arn:aws:iam::284830548330:role/ridygoLambdaRole01d57271-staging",
         "Region": "eu-north-1",

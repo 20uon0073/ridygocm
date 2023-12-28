@@ -1,8 +1,11 @@
 type User
   @model
-  @auth(rules: [{ allow: owner, operations: [create, read, update, delete] }])
-{
-  id: ID! @primaryKey
+  @auth(
+    rules: [
+      { allow: owner, operations: [create, read, update, delete] }
+    ]
+  ) {
+  id: ID!
   username: String!
   email: String!
   orders: [Order] @hasMany(indexName: "byUser")
@@ -11,10 +14,14 @@ type User
 
 type Car
   @model
-  @auth(rules: [{ allow: owner, operations: [create, read, update, delete] }])
-  @key(name: "byUser", fields: ["userId"])
+  @auth(
+    rules: [
+      { allow: owner, operations: [create, read, update, delete] }
+    ]
+  )
+  @key(fields: ["id"])
 {
-  id: ID! @primaryKey
+  id: ID!
   type: String!
   latitude: Float
   longitude: Float
@@ -27,25 +34,24 @@ type Car
 
 type Order
   @model
-  @key(name: "byUser", fields: ["userId"])
-  @key(name: "byCar", fields: ["carId", "createdAt"])
-  @auth(rules: [{ allow: owner, operations: [create, read, update, delete] }])
+  @key(fields: ["id"])
+  @key(fields: ["carId", "createdAt"])
+  @auth(
+    rules: [
+      { allow: owner, operations: [create, read, update, delete] }
+    ]
+  )
 {
-  id: ID! @primaryKey
-  createdAt: String!
-  
+  id: ID!
+  createdAt: AWSDateTime!
   type: String!
   status: String
-
   originLatitude: Float!
   originLongitude: Float!
-
   destLatitude: Float!
   destLongitude: Float!
-
   userId: ID!
   user: User @belongsTo(fields: ["userId"])
-
   carId: ID!
   car: Car @belongsTo(fields: ["carId"])
 }
