@@ -1,0 +1,418 @@
+type User @aws_cognito_user_pools {
+  id: ID!
+  username: String!
+  email: String!
+  orders: [Order]
+  car: Car
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  owner: String
+}
+
+type Car @aws_cognito_user_pools {
+  id: ID!
+  type: String!
+  latitude: Float
+  longitude: Float
+  heading: Float
+  isActive: Boolean
+  orders: [Order]
+  userId: ID!
+  user: User
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  owner: String
+}
+
+type Order @aws_cognito_user_pools {
+  id: ID!
+  createdAt: String!
+  type: String!
+  status: String
+  originLatitude: Float!
+  originLongitude: Float!
+  destLatitude: Float!
+  destLongitude: Float!
+  userId: ID!
+  user: User
+  carId: ID!
+  car: Car
+  updatedAt: AWSDateTime!
+  owner: String
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelSubscriptionStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  in: [String]
+  notIn: [String]
+}
+
+input ModelSubscriptionIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  in: [Int]
+  notIn: [Int]
+}
+
+input ModelSubscriptionFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  in: [Float]
+  notIn: [Float]
+}
+
+input ModelSubscriptionBooleanInput {
+  ne: Boolean
+  eq: Boolean
+}
+
+input ModelSubscriptionIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  in: [ID]
+  notIn: [ID]
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelUserConnection @aws_cognito_user_pools {
+  items: [User]!
+  nextToken: String
+}
+
+input ModelUserFilterInput {
+  id: ModelIDInput
+  username: ModelStringInput
+  email: ModelStringInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+type Query {
+  getUser(id: ID!): User @aws_cognito_user_pools
+  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection @aws_cognito_user_pools
+  getCar(id: ID!): Car @aws_cognito_user_pools
+  listCars(filter: ModelCarFilterInput, limit: Int, nextToken: String): ModelCarConnection @aws_cognito_user_pools
+  getOrder(id: ID!): Order @aws_cognito_user_pools
+  listOrders(filter: ModelOrderFilterInput, limit: Int, nextToken: String): ModelOrderConnection @aws_cognito_user_pools
+}
+
+input ModelUserConditionInput {
+  username: ModelStringInput
+  email: ModelStringInput
+  and: [ModelUserConditionInput]
+  or: [ModelUserConditionInput]
+  not: ModelUserConditionInput
+}
+
+input CreateUserInput {
+  id: ID
+  username: String!
+  email: String!
+}
+
+input UpdateUserInput {
+  id: ID!
+  username: String
+  email: String
+}
+
+input DeleteUserInput {
+  id: ID!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!, condition: ModelUserConditionInput): User @aws_cognito_user_pools
+  updateUser(input: UpdateUserInput!, condition: ModelUserConditionInput): User @aws_cognito_user_pools
+  deleteUser(input: DeleteUserInput!, condition: ModelUserConditionInput): User @aws_cognito_user_pools
+  createCar(input: CreateCarInput!, condition: ModelCarConditionInput): Car @aws_cognito_user_pools
+  updateCar(input: UpdateCarInput!, condition: ModelCarConditionInput): Car @aws_cognito_user_pools
+  deleteCar(input: DeleteCarInput!, condition: ModelCarConditionInput): Car @aws_cognito_user_pools
+  createOrder(input: CreateOrderInput!, condition: ModelOrderConditionInput): Order @aws_cognito_user_pools
+  updateOrder(input: UpdateOrderInput!, condition: ModelOrderConditionInput): Order @aws_cognito_user_pools
+  deleteOrder(input: DeleteOrderInput!, condition: ModelOrderConditionInput): Order @aws_cognito_user_pools
+}
+
+input ModelSubscriptionUserFilterInput {
+  id: ModelSubscriptionIDInput
+  username: ModelSubscriptionStringInput
+  email: ModelSubscriptionStringInput
+  and: [ModelSubscriptionUserFilterInput]
+  or: [ModelSubscriptionUserFilterInput]
+}
+
+type Subscription {
+  onCreateUser(filter: ModelSubscriptionUserFilterInput, owner: String): User @aws_subscribe(mutations: ["createUser"]) @aws_cognito_user_pools
+  onUpdateUser(filter: ModelSubscriptionUserFilterInput, owner: String): User @aws_subscribe(mutations: ["updateUser"]) @aws_cognito_user_pools
+  onDeleteUser(filter: ModelSubscriptionUserFilterInput, owner: String): User @aws_subscribe(mutations: ["deleteUser"]) @aws_cognito_user_pools
+  onCreateCar(filter: ModelSubscriptionCarFilterInput, owner: String): Car @aws_subscribe(mutations: ["createCar"]) @aws_cognito_user_pools
+  onUpdateCar(filter: ModelSubscriptionCarFilterInput, owner: String): Car @aws_subscribe(mutations: ["updateCar"]) @aws_cognito_user_pools
+  onDeleteCar(filter: ModelSubscriptionCarFilterInput, owner: String): Car @aws_subscribe(mutations: ["deleteCar"]) @aws_cognito_user_pools
+  onCreateOrder(filter: ModelSubscriptionOrderFilterInput, owner: String): Order @aws_subscribe(mutations: ["createOrder"]) @aws_cognito_user_pools
+  onUpdateOrder(filter: ModelSubscriptionOrderFilterInput, owner: String): Order @aws_subscribe(mutations: ["updateOrder"]) @aws_cognito_user_pools
+  onDeleteOrder(filter: ModelSubscriptionOrderFilterInput, owner: String): Order @aws_subscribe(mutations: ["deleteOrder"]) @aws_cognito_user_pools
+}
+
+type ModelCarConnection @aws_cognito_user_pools {
+  items: [Car]!
+  nextToken: String
+}
+
+input ModelCarFilterInput {
+  id: ModelIDInput
+  type: ModelStringInput
+  latitude: ModelFloatInput
+  longitude: ModelFloatInput
+  heading: ModelFloatInput
+  isActive: ModelBooleanInput
+  userId: ModelIDInput
+  and: [ModelCarFilterInput]
+  or: [ModelCarFilterInput]
+  not: ModelCarFilterInput
+}
+
+input ModelCarConditionInput {
+  type: ModelStringInput
+  latitude: ModelFloatInput
+  longitude: ModelFloatInput
+  heading: ModelFloatInput
+  isActive: ModelBooleanInput
+  userId: ModelIDInput
+  and: [ModelCarConditionInput]
+  or: [ModelCarConditionInput]
+  not: ModelCarConditionInput
+}
+
+input CreateCarInput {
+  id: ID
+  type: String!
+  latitude: Float
+  longitude: Float
+  heading: Float
+  isActive: Boolean
+  userId: ID!
+}
+
+input UpdateCarInput {
+  id: ID!
+  type: String
+  latitude: Float
+  longitude: Float
+  heading: Float
+  isActive: Boolean
+  userId: ID
+}
+
+input DeleteCarInput {
+  id: ID!
+}
+
+input ModelSubscriptionCarFilterInput {
+  id: ModelSubscriptionIDInput
+  type: ModelSubscriptionStringInput
+  latitude: ModelSubscriptionFloatInput
+  longitude: ModelSubscriptionFloatInput
+  heading: ModelSubscriptionFloatInput
+  isActive: ModelSubscriptionBooleanInput
+  userId: ModelSubscriptionIDInput
+  and: [ModelSubscriptionCarFilterInput]
+  or: [ModelSubscriptionCarFilterInput]
+}
+
+type ModelOrderConnection @aws_cognito_user_pools {
+  items: [Order]!
+  nextToken: String
+}
+
+input ModelOrderFilterInput {
+  id: ModelIDInput
+  createdAt: ModelStringInput
+  type: ModelStringInput
+  status: ModelStringInput
+  originLatitude: ModelFloatInput
+  originLongitude: ModelFloatInput
+  destLatitude: ModelFloatInput
+  destLongitude: ModelFloatInput
+  userId: ModelIDInput
+  carId: ModelIDInput
+  and: [ModelOrderFilterInput]
+  or: [ModelOrderFilterInput]
+  not: ModelOrderFilterInput
+}
+
+input ModelOrderConditionInput {
+  createdAt: ModelStringInput
+  type: ModelStringInput
+  status: ModelStringInput
+  originLatitude: ModelFloatInput
+  originLongitude: ModelFloatInput
+  destLatitude: ModelFloatInput
+  destLongitude: ModelFloatInput
+  userId: ModelIDInput
+  carId: ModelIDInput
+  and: [ModelOrderConditionInput]
+  or: [ModelOrderConditionInput]
+  not: ModelOrderConditionInput
+}
+
+input CreateOrderInput {
+  id: ID
+  createdAt: String
+  type: String!
+  status: String
+  originLatitude: Float!
+  originLongitude: Float!
+  destLatitude: Float!
+  destLongitude: Float!
+  userId: ID!
+  carId: ID!
+}
+
+input UpdateOrderInput {
+  id: ID!
+  createdAt: String
+  type: String
+  status: String
+  originLatitude: Float
+  originLongitude: Float
+  destLatitude: Float
+  destLongitude: Float
+  userId: ID
+  carId: ID
+}
+
+input DeleteOrderInput {
+  id: ID!
+}
+
+input ModelSubscriptionOrderFilterInput {
+  id: ModelSubscriptionIDInput
+  createdAt: ModelSubscriptionStringInput
+  type: ModelSubscriptionStringInput
+  status: ModelSubscriptionStringInput
+  originLatitude: ModelSubscriptionFloatInput
+  originLongitude: ModelSubscriptionFloatInput
+  destLatitude: ModelSubscriptionFloatInput
+  destLongitude: ModelSubscriptionFloatInput
+  userId: ModelSubscriptionIDInput
+  carId: ModelSubscriptionIDInput
+  and: [ModelSubscriptionOrderFilterInput]
+  or: [ModelSubscriptionOrderFilterInput]
+}

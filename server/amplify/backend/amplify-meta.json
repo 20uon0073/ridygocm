@@ -1,0 +1,129 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-ridygo-staging-164349-authRole",
+      "UnauthRoleArn": "arn:aws:iam::284830548330:role/amplify-ridygo-staging-164349-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::284830548330:role/amplify-ridygo-staging-164349-authRole",
+      "Region": "eu-north-1",
+      "DeploymentBucketName": "amplify-ridygo-staging-164349-deployment",
+      "UnauthRoleName": "amplify-ridygo-staging-164349-unauthRole",
+      "StackName": "amplify-ridygo-staging-164349",
+      "StackId": "arn:aws:cloudformation:eu-north-1:284830548330:stack/amplify-ridygo-staging-164349/a1f32970-9456-11ee-954c-0ee577700a10",
+      "AmplifyAppId": "da5x5iapoabks"
+    }
+  },
+  "auth": {
+    "ridygo84f06440": {
+      "customAuth": false,
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "output": {
+        "UserPoolId": "eu-north-1_KZzKfKqm5",
+        "AppClientIDWeb": "15srepkl87d22q52377bu7mgi",
+        "AppClientID": "34p0qnpfj57sbou86iohjpc7ui",
+        "IdentityPoolId": "eu-north-1:97ed56d6-a6d0-4a42-80e2-e43cd339469f",
+        "UserPoolArn": "arn:aws:cognito-idp:eu-north-1:284830548330:userpool/eu-north-1_KZzKfKqm5",
+        "IdentityPoolName": "ridygo84f06440_identitypool_84f06440__staging",
+        "UserPoolName": "ridygo84f06440_userpool_84f06440"
+      },
+      "lastPushTimeStamp": "2023-12-25T16:11:24.102Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-ridygo-staging-164349-deployment/amplify-cfn-templates/auth/ridygo84f06440-cloudformation-template.json",
+        "logicalId": "authridygo84f06440"
+      }
+    }
+  },
+  "api": {
+    "ridygo": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "API_KEY",
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 7
+            }
+          },
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+              "userPoolConfig": {
+                "userPoolId": "authridygo84f06440"
+              }
+            }
+          ]
+        },
+        "GraphQLAPIIdOutput": "3kzjwql2yzbehodu4ijlvnwxpy",
+        "GraphQLAPIEndpointOutput": "https://ipxfns4ffzeblmayospzaiahsu.appsync-api.eu-north-1.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-yw4lt2ytd5cknplrzfuy4bevze"
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-ridygo-staging-164349-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apiridygo"
+      },
+      "lastPushTimeStamp": "2023-12-25T16:11:24.108Z",
+      "lastPushDirHash": "wUUQPNqpbUcpv2Ye5yHwPDzVSWs="
+    }
+  },
+  "function": {
+    "ridygo9aeebaf4": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "api",
+          "resourceName": "ridygo",
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ]
+        }
+      ],
+      "lastBuildTimeStamp": "2023-12-11T19:28:55.213Z",
+      "lastBuildType": "PROD",
+      "lastPackageTimeStamp": "2023-12-11T19:28:56.741Z",
+      "distZipFilename": "ridygo9aeebaf4-72624b57325a744e452f-build.zip",
+      "s3Bucket": {
+        "deploymentBucketName": "amplify-ridygo-staging-164349-deployment",
+        "s3Key": "amplify-builds/ridygo9aeebaf4-72624b57325a744e452f-build.zip"
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-ridygo-staging-164349-deployment/amplify-cfn-templates/function/ridygo9aeebaf4-cloudformation-template.json",
+        "logicalId": "functionridygo9aeebaf4"
+      },
+      "lastPushTimeStamp": "2023-12-25T16:11:24.138Z",
+      "output": {
+        "LambdaExecutionRoleArn": "arn:aws:iam::284830548330:role/ridygoLambdaRole01d57271-staging",
+        "Region": "eu-north-1",
+        "Arn": "arn:aws:lambda:eu-north-1:284830548330:function:ridygo9aeebaf4-staging",
+        "Name": "ridygo9aeebaf4-staging",
+        "LambdaExecutionRole": "ridygoLambdaRole01d57271-staging"
+      },
+      "lastPushDirHash": "h9IOP3oxi/v5fxTBBhRDlpRNjUA="
+    }
+  }
+}

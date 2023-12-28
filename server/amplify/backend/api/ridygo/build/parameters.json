@@ -1,0 +1,7 @@
+{
+    "AppSyncApiName": "ridygo",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": false,
+    "S3DeploymentBucket": "amplify-ridygo-staging-164349-deployment",
+    "S3DeploymentRootKey": "amplify-appsync-files/6838d989c61daafaab456bd3ba4840f051fda2c2"
+}

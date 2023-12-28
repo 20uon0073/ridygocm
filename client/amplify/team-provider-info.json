@@ -1,0 +1,30 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-ridygo-staging-164349-authRole",
+      "UnauthRoleArn": "arn:aws:iam::284830548330:role/amplify-ridygo-staging-164349-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::284830548330:role/amplify-ridygo-staging-164349-authRole",
+      "Region": "eu-north-1",
+      "DeploymentBucketName": "amplify-ridygo-staging-164349-deployment",
+      "UnauthRoleName": "amplify-ridygo-staging-164349-unauthRole",
+      "StackName": "amplify-ridygo-staging-164349",
+      "StackId": "arn:aws:cloudformation:eu-north-1:284830548330:stack/amplify-ridygo-staging-164349/a1f32970-9456-11ee-954c-0ee577700a10",
+      "AmplifyAppId": "da5x5iapoabks"
+    },
+    "categories": {
+      "auth": {
+        "RidyGo": {},
+        "ridygo84f06440": {}
+      },
+      "api": {
+        "ridygo": {}
+      },
+      "function": {
+        "ridygo9aeebaf4": {
+          "deploymentBucketName": "amplify-ridygo-staging-164349-deployment",
+          "s3Key": "amplify-builds/ridygo9aeebaf4-72624b57325a744e452f-build.zip"
+        }
+      }
+    }
+  }
+}
