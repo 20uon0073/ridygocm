@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View ,Text, Dimensions,Pressable,onGoPress} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View ,Text, Dimensions,Pressable,onGoPress} from 'react-native';  
 import MapView, {PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import Entypo from'react-native-vector-icons/Entypo';
@@ -10,8 +10,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import styles  from './styles';
 import NewOrderPopup from '../../components/NewOrderPopup';
 
-const origin = {latitude: 32.098641, longitude: 74.874827};
-const destination = {latitude: 37.771707, longitude: -122.4053769};
+const origin = {latitude: 32.101406, longitude: 74.879951};
+const destination = {latitude: 32.101606, longitude: 74.860951};
 const GOOGLE_MAPS_APIKEY = 'AIzaSyDeJpCLAWlRgFul8TvXGiLP8lp1p5Mf0HQ';
 
 const HomeScreen = () => {
@@ -22,11 +22,11 @@ const HomeScreen = () => {
    const [newOrder,setNewOrder]=useState({
     id:'1',
     type:'RidyX',
-    originLatitude: 32.098641,
-    originLongitude: 74.876827,
+    originLatitude: 32.0951163,
+    originLongitude: 74.8827961,
 
-    destLatitude: 32.098741,
-    destLongitude: 74.874827,
+    destLatitude: 32.0960264,
+    destLongitude: 74.8678878,
 
    user:{
     rating :4.8,
@@ -51,42 +51,108 @@ const HomeScreen = () => {
     setMyPosition(event.nativeEvent.coordinate);
    }
    const onDirectionFound=(event)=>{
-    console.log("direction Found",event);
+    console.log("Direction Found",event);
     if (order){
       setOrder({
         ...order,
-        distance:event.distance,
-        duration:event.duration,
+        distance:  event.distance,
+        duration:  event.duration,
+        pickedUp:order.pickedUp || event.distance <0.2,
+        isFinished:order.pickedUp && event.distance <0.2,
       })
     }
    }
 
-   const renderBottomTitle=()=>{
-    if (order){
-      return(
-        <View style={{alignItems:'center'}}>
-          <View style={{flexDirection:'row',alignItems:'center'}}>
-            <Text> {order.distance.toFixed(1) ||'?'} </Text>
-            <View style={{backgroundColor:'#235536',marginHorizontal:10,width:30,height:30,alignItems:'center',justifyContent:'center',borderRadius:20}}> 
-            <FontAwesome name ={"user"} color={"white"}size ={20}/>
-          </View>
-          <Text>0.2 mi</Text>
-          </View>
-           <Text style={styles.bottomText}> Picking Up {order.user.name} </Text>
-        </View>
-        
-      )
+ const getDestination =()=>{
+  if (order && order.pickedUp){
+    return {
+      latitude: order.destLatitude,
+      longitude: order.destLongitude,
     }
-    
-       if (isOnline){
+  }
+  return{
+    latitude: order.originLatitude,
+    longitude: order.originLongitude,
+  }
+ }
 
-        return(
-          <Text style={styles.bottomText}> You are Online </Text>
-        )
-       } 
-      
-      return <Text style={styles.bottomText}> You are Offline </Text>;
-      }
+
+
+ const renderBottomTitle = () => {
+  if (order && order.isFinished) {
+    return (
+      <View style={{ alignItems: 'center' }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#cb1a1a',
+            width: 200,
+            padding: 10,
+          }}>
+          <Text style={{color:'white',fontWeight:'bold'}}> Complete {order.type}</Text>
+        </View>
+        <Text style={styles.bottomText}>{order.user.name} </Text>
+      </View>
+    );
+  }
+
+  if (order && order.pickedUp) {
+    return (
+      <View style={{ alignItems: 'center' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text> {order.duration ? order.duration.toFixed(1) : '?'} </Text>
+          <View
+            style={{
+              backgroundColor: '#235536',
+              marginHorizontal: 10,
+              width: 30,
+              height: 30,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 20,
+            }}>
+            <FontAwesome name={'user'} color={'Yellow'} size={20} />
+          </View>
+          <Text>{order.distance ? order.distance.toFixed(1) : '?'} Km</Text>
+        </View>
+        <Text style={styles.bottomText}> Dropping off {order.user.name} </Text>
+      </View>
+    );
+  }
+
+  if (order) {
+    return (
+      <View style={{ alignItems: 'center' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text> {order.duration ? order.duration.toFixed(1) : '?'} </Text>
+          <View
+            style={{
+              backgroundColor: '#235536',
+              marginHorizontal: 10,
+              width: 30,
+              height: 30,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 20,
+            }}>
+            <FontAwesome name={'user'} color={'white'} size={20} />
+          </View>
+          <Text>{order.distance ? order.distance.toFixed(1) : '?'} Km</Text>
+        </View>
+        <Text style={styles.bottomText}> Picking Up {order.user.name} </Text>
+      </View>
+    );
+  }
+
+  if (isOnline) {
+    return <Text style={styles.bottomText}> You are Online </Text>;
+  }
+
+  return <Text style={styles.bottomText}> You are Offline </Text>;
+};
+
    
   return (
     <View>
@@ -96,20 +162,17 @@ const HomeScreen = () => {
         showsUserLocation={true}
         onUserLocationChange={onUserLocationChange}
         initialRegion={{
-          latitude: 32.099641,
-          longitude: 74.876527,
+          latitude: 32.101406,
+          longitude: 74.879951,
           latitudeDelta: 0.025,
           longitudeDelta: 0.035,
         }}
       > 
-      {order &&(
+      {order && (
                   <MapViewDirections
                   origin={myPosition}
                   onReady={onDirectionFound}
-                  destination={{
-                    latitude:order.originLatitude,
-                    longitude:order.originLongitude,
-                  }}
+                  destination={getDestination()}
                   apikey={GOOGLE_MAPS_APIKEY}
                   strokeWidth={9}
                   strokeColor="black"
