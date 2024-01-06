@@ -8,19 +8,20 @@ export const getUser = /* GraphQL */ `
       username
       email
       orders {
-        id
-        createdAt
-        type
-        status
-        originLatitude
-        originLongitude
-        destLatitude
-        destLongitude
-        userId
-        carId
-        updatedAt
-        owner
-        __typename
+        items {
+          id
+          createdAt
+          type
+          status
+          originLatitude
+          oreiginLongitude
+          destLatitude
+          destLongitude
+          userId
+          carId
+          updatedAt
+        }
+        nextToken
       }
       car {
         id
@@ -29,16 +30,22 @@ export const getUser = /* GraphQL */ `
         longitude
         heading
         isActive
+        orders {
+          nextToken
+        }
         userId
+        user {
+          id
+          username
+          email
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
-        owner
-        __typename
       }
       createdAt
       updatedAt
-      owner
-      __typename
     }
   }
 `;
@@ -53,13 +60,24 @@ export const listUsers = /* GraphQL */ `
         id
         username
         email
+        orders {
+          nextToken
+        }
+        car {
+          id
+          type
+          latitude
+          longitude
+          heading
+          isActive
+          userId
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
-        owner
-        __typename
       }
       nextToken
-      __typename
     }
   }
 `;
@@ -73,34 +91,45 @@ export const getCar = /* GraphQL */ `
       heading
       isActive
       orders {
-        id
-        createdAt
-        type
-        status
-        originLatitude
-        originLongitude
-        destLatitude
-        destLongitude
-        userId
-        carId
-        updatedAt
-        owner
-        __typename
+        items {
+          id
+          createdAt
+          type
+          status
+          originLatitude
+          oreiginLongitude
+          destLatitude
+          destLongitude
+          userId
+          carId
+          updatedAt
+        }
+        nextToken
       }
       userId
       user {
         id
         username
         email
+        orders {
+          nextToken
+        }
+        car {
+          id
+          type
+          latitude
+          longitude
+          heading
+          isActive
+          userId
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
-        owner
-        __typename
       }
       createdAt
       updatedAt
-      owner
-      __typename
     }
   }
 `;
@@ -118,14 +147,21 @@ export const listCars = /* GraphQL */ `
         longitude
         heading
         isActive
+        orders {
+          nextToken
+        }
         userId
+        user {
+          id
+          username
+          email
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
-        owner
-        __typename
       }
       nextToken
-      __typename
     }
   }
 `;
@@ -137,7 +173,7 @@ export const getOrder = /* GraphQL */ `
       type
       status
       originLatitude
-      originLongitude
+      oreiginLongitude
       destLatitude
       destLongitude
       userId
@@ -145,10 +181,22 @@ export const getOrder = /* GraphQL */ `
         id
         username
         email
+        orders {
+          nextToken
+        }
+        car {
+          id
+          type
+          latitude
+          longitude
+          heading
+          isActive
+          userId
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
-        owner
-        __typename
       }
       carId
       car {
@@ -158,15 +206,21 @@ export const getOrder = /* GraphQL */ `
         longitude
         heading
         isActive
+        orders {
+          nextToken
+        }
         userId
+        user {
+          id
+          username
+          email
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
-        owner
-        __typename
       }
       updatedAt
-      owner
-      __typename
     }
   }
 `;
@@ -183,17 +237,32 @@ export const listOrders = /* GraphQL */ `
         type
         status
         originLatitude
-        originLongitude
+        oreiginLongitude
         destLatitude
         destLongitude
         userId
+        user {
+          id
+          username
+          email
+          createdAt
+          updatedAt
+        }
         carId
+        car {
+          id
+          type
+          latitude
+          longitude
+          heading
+          isActive
+          userId
+          createdAt
+          updatedAt
+        }
         updatedAt
-        owner
-        __typename
       }
       nextToken
-      __typename
     }
   }
 `;

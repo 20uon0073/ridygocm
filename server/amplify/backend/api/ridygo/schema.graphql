@@ -1,57 +1,50 @@
-type User
-  @model
-  @auth(
-    rules: [
-      { allow: owner, operations: [create, read, update, delete] }
-    ]
-  ) {
+type User @model {
   id: ID!
   username: String!
   email: String!
-  orders: [Order] @hasMany(indexName: "byUser")
-  car: Car @hasOne
+
+  orders: [Order] @connection(keyName: "byUser", fields: ["id"])
+  car: Car @connection(fields: ["id"])
 }
 
-type Car
-  @model
-  @auth(
-    rules: [
-      { allow: owner, operations: [create, read, update, delete] }
-    ]
-  )
-  @key(fields: ["id"])
-{
+type Car @model
+  @key(name: "byUser", fields: ["userId"]) {
   id: ID!
   type: String!
-  latitude: Float
-  longitude: Float
-  heading: Float
+  latitude: Float,
+  longitude: Float,
+  heading: Float,
   isActive: Boolean
-  orders: [Order] @hasMany(indexName: "byCar")
+
+  orders: [Order] @connection(keyName: "byCar", fields: ["id"])
+
   userId: ID!
-  user: User @belongsTo(fields: ["userId"])
+  user: User @connection(fields: ["userId"])
 }
 
-type Order
-  @model
-  @key(fields: ["id"])
-  @key(fields: ["carId", "createdAt"])
-  @auth(
-    rules: [
-      { allow: owner, operations: [create, read, update, delete] }
-    ]
-  )
-{
+type Order @model
+  @key(name: "byUser", fields: ["userId"])
+  @key(name: "byCar", fields: ["carId", "createdAt"]) {
   id: ID!
-  createdAt: AWSDateTime!
+  createdAt: String!
+
   type: String!
-  status: String
+  status: String,
+
   originLatitude: Float!
-  originLongitude: Float!
+  oreiginLongitude: Float!
+
   destLatitude: Float!
   destLongitude: Float!
+
   userId: ID!
-  user: User @belongsTo(fields: ["userId"])
+  user: User @connection(fields: ["userId"])
+
   carId: ID!
-  car: Car @belongsTo(fields: ["carId"])
+  car: Car @connection(fields: ["carId"])
 }
+
+type Subscription {
+  onOrderUpdated(id: ID!): Order @aws_subscribe(mutations: ["updateOrder"])
+  onCarUpdated(id: ID!): Car @aws_subscribe(mutations: ["updateCar"])
+} 

@@ -10,7 +10,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import styles  from './styles';
 import NewOrderPopup from '../../components/NewOrderPopup';
 
-const origin = {latitude: 32.101406, longitude: 74.879951};
+const origin = {latitude: 32.1014067, longitude: 74.8799518};
 const destination = {latitude: 32.101606, longitude: 74.860951};
 const GOOGLE_MAPS_APIKEY = 'AIzaSyDeJpCLAWlRgFul8TvXGiLP8lp1p5Mf0HQ';
 
@@ -22,8 +22,8 @@ const HomeScreen = () => {
    const [newOrder,setNewOrder]=useState({
     id:'1',
     type:'RidyX',
-    originLatitude: 32.0951163,
-    originLongitude: 74.8827961,
+    originLatitude: 32.1014067,
+    originLongitude: 74.8799518,
 
     destLatitude: 32.0960264,
     destLongitude: 74.8678878,
@@ -57,8 +57,8 @@ const HomeScreen = () => {
         ...order,
         distance:  event.distance,
         duration:  event.duration,
-        pickedUp:order.pickedUp || event.distance <0.2,
-        isFinished:order.pickedUp && event.distance <0.2,
+        pickedUp:  order.pickedUp || event.distance <0.2,
+        isFinished: order.pickedUp && event.distance <0.2,
       })
     }
    }
@@ -75,8 +75,6 @@ const HomeScreen = () => {
     longitude: order.originLongitude,
   }
  }
-
-
 
  const renderBottomTitle = () => {
   if (order && order.isFinished) {
