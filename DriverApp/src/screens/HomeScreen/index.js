@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View ,Text, Dimensions,Pressable,onGoPress} from 'react-native';  
+import { View ,Text, Dimensions,Pressable,onGoPress, Image} from 'react-native';  
 import MapView, {PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import Entypo from'react-native-vector-icons/Entypo';
@@ -10,45 +10,105 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import styles  from './styles';
 import NewOrderPopup from '../../components/NewOrderPopup';
 
+import {Auth, API,graphqlOperation } from 'aws-amplify';
+import { getCar,listOrders } from '../../graphql/queries';
+import { updateCar } from '../../graphql/mutations';
+
+
+
 const origin = {latitude: 32.1014067, longitude: 74.8799518};
 const destination = {latitude: 32.101606, longitude: 74.860951};
 const GOOGLE_MAPS_APIKEY = 'AIzaSyDeJpCLAWlRgFul8TvXGiLP8lp1p5Mf0HQ';
 
 const HomeScreen = () => {
-   const [isOnline,setIsOnline]=useState(false);
+  const [car,setCar]=useState(null);
    const [myPosition, setMyPosition ]=useState(null);
 
    const [order, setOrder]=useState(null)
-   const [newOrder,setNewOrder]=useState({
-    id:'1',
-    type:'RidyX',
-    originLatitude: 32.1014067,
-    originLongitude: 74.8799518,
+   const [newOrders,setNewOrders]=useState([]);
 
-    destLatitude: 32.0960264,
-    destLongitude: 74.8678878,
 
-   user:{
-    rating :4.8,
-    name: 'Ali',
-   }
-   })
+   const fetchCar = async () => {
+    try {
+      const userData = await Auth.currentAuthenticatedUser();
+      const carData = await API.graphql(
+        graphqlOperation(getCar,{id:userData.attributes.sub}),
+      )
+      setCar(carData.data.getCar);
+  
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const fetchOrders =async()=>{
+    try {
+   const  ordersData =await API.graphql(
+     graphqlOperation(
+      listOrders,
+      //{ variables: { filter: { status: { eq: 'NEW' } } } }
+  )
+   );
+    setNewOrders(ordersData.data.listOrders.items);
+    }catch (e){
+      console.log(e);
+    }
+  }
+
+   useEffect(()=>{
+    fetchCar();
+    fetchOrders();
+
+   }, []);
+
+
    const onDecline=()=>{
-    setNewOrder(null);
+    setNewOrders(newOrders.slice(1));
    }
    
    const onAccept=(newOrder)=>{
     setOrder(newOrder);
-    setNewOrder(null);
+    setNewOrders(newOrders.slice(1));
 
    }
 
-   const onGoPress =()=>{
-    setIsOnline(!isOnline);
+   const onGoPress = async()=>{
+    // update the car and set it is online
+    try{
+      const userData = await Auth.currentAuthenticatedUser();
+      const input={
+        id:userData.attributes.sub,
+        isActive:!car.isActive,
+      }
+      const updatedCarData =await API.graphql(
+        graphqlOperation(updateCar, {input})
+
+      )
+      setCar(updatedCarData.data.updateCar);
+    }catch (e){
+      console.error(e);
+    }
    }
-   const onUserLocationChange=(event)=>{
+   const onUserLocationChange=async(event)=>{
   
-    setMyPosition(event.nativeEvent.coordinate);
+    const {latitude, longitude,heading}=event.nativeEvent.coordinate
+       // update the car and set it is online
+       try{
+        const userData = await Auth.currentAuthenticatedUser();
+        const input={
+          id:userData.attributes.sub,
+          latitude,
+          longitude,
+          heading ,
+        }
+        const updatedCarData =await API.graphql(
+          graphqlOperation(updateCar, {input})
+  
+        )
+        setCar(updatedCarData.data.updateCar);
+      }catch (e){
+        console.error(e);
+      }
    }
    const onDirectionFound=(event)=>{
     console.log("Direction Found",event);
@@ -91,7 +151,7 @@ const HomeScreen = () => {
           }}>
           <Text style={{color:'white',fontWeight:'bold'}}> Complete {order.type}</Text>
         </View>
-        <Text style={styles.bottomText}>{order.user.name} </Text>
+        <Text style={styles.bottomText}>{order.user.username} </Text>
       </View>
     );
   }
@@ -115,7 +175,7 @@ const HomeScreen = () => {
           </View>
           <Text>{order.distance ? order.distance.toFixed(1) : '?'} Km</Text>
         </View>
-        <Text style={styles.bottomText}> Dropping off {order.user.name} </Text>
+        <Text style={styles.bottomText}> Dropping off {order.user.username} </Text>
       </View>
     );
   }
@@ -144,7 +204,7 @@ const HomeScreen = () => {
     );
   }
 
-  if (isOnline) {
+  if (car?.isActive) {
     return <Text style={styles.bottomText}> You are Online </Text>;
   }
 
@@ -167,8 +227,11 @@ const HomeScreen = () => {
         }}
       > 
       {order && (
-                  <MapViewDirections
-                  origin={myPosition}
+              <MapViewDirections
+                  origin={{
+                    latitude:car?.latitude,
+                    longitude:car?.longitude,
+                  }}
                   onReady={onDirectionFound}
                   destination={getDestination()}
                   apikey={GOOGLE_MAPS_APIKEY}
@@ -216,9 +279,7 @@ const HomeScreen = () => {
         onPress={onGoPress}
         style={styles.goButton}>
         <Text style={styles.goText}>
-          {
-            isOnline ? 'END' :'GO'
-          }
+          {car?.isOnline ? 'END' :'GO'}
           </Text>
         </Pressable>
         <View style={styles.bottomContainer}>
@@ -227,12 +288,12 @@ const HomeScreen = () => {
                {renderBottomTitle()}
           <Octicons name={"multi-select"} size={30} color="#4a4a4a"  />
         </View>
-       {newOrder && <NewOrderPopup 
-        newOrder={newOrder}
+       {newOrders.length>0 &&!order && <NewOrderPopup 
+        newOrder={newOrders[0]}
         duration={2}
         distance={0.5}
         onDecline={onDecline}
-        onAccept={()=>onAccept(newOrder)}
+        onAccept={()=>onAccept(newOrders[0])}
         />}
     </View>
   );

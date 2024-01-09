@@ -23,7 +23,7 @@ const NewOrderPopup = ({newOrder,onAccept,onDecline,duration,distance}) => {
         <Image source={{}}/>
         <Text style={styles.uberType}> 
             <AntDesign name={"star"} size={18}/>
-            {newOrder.user.rating}
+            {newOrder.user?.rating}
         </Text>
       </View>
       <Text style={styles.minutes}> {duration} min</Text>
