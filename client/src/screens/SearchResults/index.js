@@ -46,14 +46,7 @@ const SearchResults = (props) => {
       
    
     console.log(response);
-    Alert.alert({
-      title: " RidyGo",
-      message: "Your order has been submitted",
-      buttons: [{
-        text: "Go Home",
-        onPress: () => navigation.navigate('Home'),
-      }]
-    });
+    navigation.navigate('OrderPage',{id: response.data.createOrder.id});
     
     }catch (e){
       console.error(e);
