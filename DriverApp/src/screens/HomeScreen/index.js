@@ -12,7 +12,7 @@ import NewOrderPopup from '../../components/NewOrderPopup';
 
 import {Auth, API,graphqlOperation } from 'aws-amplify';
 import { getCar,listOrders } from '../../graphql/queries';
-import { updateCar } from '../../graphql/mutations';
+import { updateCar, updateOrder } from '../../graphql/mutations';
 
 
 
@@ -46,8 +46,8 @@ const HomeScreen = () => {
    const  ordersData =await API.graphql(
      graphqlOperation(
       listOrders,
-      //{ variables: { filter: { status: { eq: 'NEW' } } } }
-  )
+        { filter: { status: { eq: 'NEW' } }  }
+       )
    );
     setNewOrders(ordersData.data.listOrders.items);
     }catch (e){
@@ -66,8 +66,22 @@ const HomeScreen = () => {
     setNewOrders(newOrders.slice(1));
    }
    
-   const onAccept=(newOrder)=>{
-    setOrder(newOrder);
+   const onAccept= async (newOrder)=>{
+    try {
+    const input ={
+      id:newOrder.id,
+      status:"PICKING_UP_CLIENT",
+      carId:car.Id
+    }
+    const orderData =await API.graphql(
+      graphqlOperation(updateOrder , {input})
+    )
+    setOrder(orderData.data.updateOrder);
+    }catch (e){
+
+    }
+
+    
     setNewOrders(newOrders.slice(1));
 
    }
@@ -151,7 +165,7 @@ const HomeScreen = () => {
           }}>
           <Text style={{color:'white',fontWeight:'bold'}}> Complete {order.type}</Text>
         </View>
-        <Text style={styles.bottomText}>{order.user.username} </Text>
+        <Text style={styles.bottomText}>{order?.user?.username} </Text>
       </View>
     );
   }
@@ -175,7 +189,7 @@ const HomeScreen = () => {
           </View>
           <Text>{order.distance ? order.distance.toFixed(1) : '?'} Km</Text>
         </View>
-        <Text style={styles.bottomText}> Dropping off {order.user.username} </Text>
+        <Text style={styles.bottomText}> Dropping off {order?.user?.username} </Text>
       </View>
     );
   }
