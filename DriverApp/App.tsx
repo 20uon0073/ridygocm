@@ -5,12 +5,12 @@
  * @format
  */
 
-import React,{useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StatusBar } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
-import { API, Amplify, Auth ,graphqlOperation} from 'aws-amplify';
+import { API, Amplify, Auth ,graphqlOperation, Hub } from 'aws-amplify';
 import awsconfig from './src/aws-exports';
-import { withAuthenticator } from 'aws-amplify-react-native';
+import { Authenticator } from 'aws-amplify-react-native';
 import { getCarId } from './src/graphql/queries';
 import { createCar } from './src/graphql/mutations';
 
@@ -18,6 +18,7 @@ import { createCar } from './src/graphql/mutations';
 Amplify.configure(awsconfig);
 
 const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(()=>{
     const updateUserCar=async()=>{
@@ -62,10 +63,14 @@ const App: React.FC = () => {
     <>
       <SafeAreaView style={{ flex: 1 }}>
         <StatusBar barStyle="dark-content" />
-        <HomeScreen />
+        {isAuthenticated ? (
+          <HomeScreen />
+        ) : (
+          <Authenticator />
+        )}
       </SafeAreaView>
     </>
   );
 };
 
-export default  withAuthenticator(App);
+export default App;
